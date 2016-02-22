@@ -1,4 +1,0 @@
-click==6.2
-peewee==2.8.0
-plan==0.5
-PyMySQL==0.7.1
