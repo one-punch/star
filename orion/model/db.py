@@ -1,7 +1,7 @@
 from peewee import *
 import datetime
 
-database = MySQLDatabase("onepunch", host="127.0.0.1", port=3306, user="root", passwd="qazwsx")
+database = MySQLDatabase("onepunch", host="127.0.0.1", port=3306, user="root", passwd="123456")
 prefix = "douban_"
 
 class BaseModel(Model):
@@ -82,6 +82,7 @@ class Movie(BaseModel, ImageManager):
 	reviews_count = IntegerField()
 	summary = TextField()
 	original_title = CharField()
+	url = CharField()
 	created_at = DateTimeField(default=datetime.datetime.now)
 	updated_at = DateTimeField(default=datetime.datetime.now)
 
