@@ -8,7 +8,7 @@ from time import sleep
 from alnilam import Alnilam
 import config
 import  threading
-
+import sys
 
 options = config.options
 logger = log.logger()
@@ -143,7 +143,9 @@ def main():
         available = model.MovieQueue.select().where(model.MovieQueue.state == 0).count()
         if available == 0:
             logger.info("finish")
-            break
+            sys.exit()
+        else:
+            sleep(1200)
 
 
 if __name__ == '__main__':
