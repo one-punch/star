@@ -1,7 +1,10 @@
 from peewee import *
 import datetime
+import config
 
-database = MySQLDatabase("onepunch", host="127.0.0.1", port=3306, user="root", passwd="123456")
+options = config.options
+
+database = MySQLDatabase(options.database, host=options.host, port=options.port, user=options.user, passwd=options.password)
 prefix = "douban_"
 
 class BaseModel(Model):
@@ -151,6 +154,26 @@ class MovieCast(BaseModel):
 	class Meta:
 		db_table = prefix + "movies_casts"
 
+class Config(BaseModel):
+	id = PrimaryKeyField()
+	name = CharField()
+	value = CharField()
+	created_at = DateTimeField(default=datetime.datetime.now)
+	updated_at = DateTimeField(default=datetime.datetime.now)
+
+	class Meta:
+		db_table = prefix + "configs"
+
+class MovieQueue(BaseModel):
+	id = PrimaryKeyField()
+	douban_id = CharField()
+	state = IntegerField(default=0)
+	created_at = DateTimeField(default=datetime.datetime.now)
+
+	class Meta:
+		db_table = prefix + "movie_queue"
+
+
 def init_db():
 	__all__ = [
 		Image,
@@ -161,8 +184,13 @@ def init_db():
 		MovieCountry,
 		MovieGenre,
 		MovieDirector,
-		MovieCast
+		MovieCast,
+		Config,
+		MovieQueue
 	]
 
 	database.connect()
 	database.create_tables(__all__)
+
+if __name__ == '__main__':
+    init_db()

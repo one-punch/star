@@ -56,11 +56,11 @@ class Alnilam:
 
 		build_relationship(movie, celebrity)
 
-	def generate_movie(self, movie_sub, detail):
+	def generate_movie(self, detail):
 		movie = Alnilam.get_first_movie(detail.id)
 		if movie is None:
-			movie = model.Movie.create(douban_id=detail.id, title=detail.title, douban_url=movie_sub.url, rate=movie_sub.rate, year=detail.year, douban_mobile_url=detail.mobile_url,
-						ratings_count=detail.ratings_count, summary=detail.summary, original_title=detail.original_title)
+			movie = model.Movie.create(douban_id=detail.id, title=detail.title, douban_url=detail.alt, rate=detail.rating["average"], year=detail.year, douban_mobile_url=detail.mobile_url,
+						ratings_count=detail.ratings_count, summary=detail.summary, original_title=detail.original_title, collect_count=detail.collect_count, reviews_count=detail.reviews_count)
 			model.Image.create(small=detail.images['small'], medium=detail.images['medium'], large=detail.images['large'], item_type=movie.__class_name__, item_id = movie.id)
 
 			for country_name in detail.countries:

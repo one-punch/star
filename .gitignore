@@ -5,3 +5,5 @@ pip-selfcheck.json
 __pycache__/
 model/__pycache__/
 *.pyc
+config.json
+orion/orion.log
