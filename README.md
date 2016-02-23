@@ -2,6 +2,12 @@
 
 ### 开始
 
+#### 数据库
+
+```shell
+    python3 model/db.py
+```
+
 ```shell
   pyvenv .
 
