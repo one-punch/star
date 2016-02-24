@@ -5,7 +5,7 @@
 #### 数据库
 
 ```shell
-    python3 model/db.py
+    python3 -m model.db
 ```
 
 ```shell
