@@ -4,5 +4,6 @@
     "port": 3306,
     "user": "root",
     "password": "qazwsx",
-    "max_page": 2
+    "max_page": 2,
+    "page_limit": 20
 }
