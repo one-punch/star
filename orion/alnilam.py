@@ -52,7 +52,7 @@ class Alnilam:
 		celebrity = Alnilam.get_first_celebrity(douban_id)
 		if celebrity is None:
 			celebrity = model.Celebrity.create(douban_id=douban_id, name=name, douban_url=douban_url)
-			model.Image.create(small=images['small'], medium=images['medium'], large=images['large'], item_type=celebrity.__class_name__, item_id = celebrity.id)
+			model.Image.create(small=images['small'], medium=images['medium'], large=images['large'], item_type=celebrity.__class__.__name__, item_id = celebrity.id)
 
 		build_relationship(movie, celebrity)
 
@@ -61,7 +61,7 @@ class Alnilam:
 		if movie is None:
 			movie = model.Movie.create(douban_id=detail.id, title=detail.title, douban_url=detail.alt, rate=detail.rating["average"], year=detail.year, douban_mobile_url=detail.mobile_url,
 						ratings_count=detail.ratings_count, summary=detail.summary, original_title=detail.original_title, collect_count=detail.collect_count, reviews_count=detail.reviews_count)
-			model.Image.create(small=detail.images['small'], medium=detail.images['medium'], large=detail.images['large'], item_type=movie.__class_name__, item_id = movie.id)
+			model.Image.create(small=detail.images['small'], medium=detail.images['medium'], large=detail.images['large'], item_type=movie.__class__.__name__, item_id = movie.id)
 
 			for country_name in detail.countries:
 				Alnilam.build_country(movie, country_name)

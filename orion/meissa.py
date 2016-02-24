@@ -13,7 +13,7 @@ import sys
 options = config.options
 logger = log.logger()
 
-__tags = ["热门","最新","经典","可播放","豆瓣高分","冷门佳片","华语","欧美","韩国","日本","动作","喜剧","爱情","科幻","悬疑","恐怖","文艺"]
+__tags = ["热门","最新","经典","可播放", "豆瓣高分","冷门佳片","华语","欧美","韩国","日本","动作","喜剧","爱情","科幻","悬疑","恐怖","文艺"]
 
 
 class Subject():
@@ -22,8 +22,6 @@ class Subject():
 
 class Meissa():
     timeout = 100
-    page_limit = 20
-
 
     __urls = {
         "search": "http://movie.douban.com/j/search_subjects",
@@ -53,13 +51,13 @@ class Meissa():
     def get_movies(self, start_num, tag, data = {
         'type': 'movie',
         'sort': 'recommend',
-        'page_limit': page_limit,
+        'page_limit': options.page_limit,
         }):
 
         data['tag'] = tag
         for x in range(start_num, options.max_page):
             self.x = x
-            data['page_start'] = x * self.page_limit
+            data['page_start'] = x * options.page_limit
             params = urllib.parse.urlencode(data)
             res = self.opener.open(self.__urls["search"] + "?" + params, timeout = self.timeout)
             result = res.read()
@@ -121,7 +119,9 @@ def get_movie_detail():
 
 def movie_detail_start():
     sleep(2)
-    threading.Thread(target=get_movie_detail, name="get_movie_detail").start()
+    thread = threading.Thread(target=get_movie_detail, name="get_movie_detail")
+    thread.setDaemon(True)
+    thread.start()
 
 def main():
     first = get_continue()
@@ -143,7 +143,7 @@ def main():
         available = model.MovieQueue.select().where(model.MovieQueue.state == 0).count()
         if available == 0:
             logger.info("finish")
-            sys.exit()
+            sys.exit(3)
         else:
             sleep(1200)
 
