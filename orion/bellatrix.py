@@ -24,7 +24,7 @@ class Planet:
 		'Accept': 'text/html, application/xhtml+xml, */*',
 		'Accept-Language': 'en-US,en;q=0.8,zh-Hans-CN;q=0.5,zh-Hans;q=0.3',
 		'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko',
-		'Cookie': 'pgv_pvi=3125944320; pgv_si=s3699565568; fts=1440563200; sid=639eso63; LIVE_BUVID=c9d691d803f02630e8f080d527aa6716; LIVE_BUVID__ckMd5=6c1f0b546d46cc6f; DedeUserID=252152; DedeUserID__ckMd5=f1c32e768f29d468; SESSDATA=0d9059a5%2C1456986269%2Cf7299ccc; IESESSION=alive; user_face=http%3A%2F%2Fi1.hdslb.com%2Fuser%2F2521%2F252152%2Fmyface.jpg; LIVE_LOGIN_DATA=3f0dc76243fc4135b10ad5d76a9c7f8345962cce; LIVE_LOGIN_DATA__ckMd5=65a5291e167a8111; DedeID=3180622; rlc_time=1456823609703; _cnt_dyn=null; _cnt_pm=0; _cnt_notify=4; uTZ=-480; CNZZDATA2724999=cnzz_eid%3D1046512906-1440563100-null%26ntime%3D1456828381'
+		'Cookie': ''
 		}):
 		self.head = head
 		self.opener = urllib.request.build_opener()
@@ -132,8 +132,5 @@ class Bellatrix(Planet):
 		sign = self.get_sign(params)
 
 		logger.info("get: " + self.__urls["view"] + "?" + sign)
-		print("get: " + self.__urls["view"] + "?" + sign)
 		res = self.opener.open(self.__urls["view"] + "?" + sign).read()
-		print("view: ")
-		print(json.loads(res.decode()))
 		return Subject(json.loads(res.decode()))
