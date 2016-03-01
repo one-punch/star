@@ -6,9 +6,13 @@ from subject import *
 import model.db as model
 from time import sleep
 from alnilam import Alnilam
+from betelgeuse import Betelgeuse
+from bellatrix import Planet
+from bellatrix import Bellatrix
 import config
 import  threading
 import sys
+
 
 options = config.options
 logger = log.logger()
@@ -20,7 +24,7 @@ class Subject():
     def __init__(self, d):
         self.__dict__ = d
 
-class Meissa():
+class Meissa(Planet):
     timeout = 100
 
     __urls = {
@@ -31,22 +35,6 @@ class Meissa():
     def __init__(self):
         self.x = 0
         self.init_opener()
-
-    def init_opener(self, head = {
-        'Connection': 'Keep-Alive',
-        'Accept': 'text/html, application/xhtml+xml, */*',
-        'Accept-Language': 'en-US,en;q=0.8,zh-Hans-CN;q=0.5,zh-Hans;q=0.3',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko'
-        }):
-        self.head = head
-        cj = http.cookiejar.CookieJar()
-        self.opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
-        header = []
-        for key, value in head.items():
-            elem = (key, value)
-            header.append(elem)
-        self.opener.addheaders = header
-        return self.opener
 
     def get_movies(self, start_num, tag, data = {
         'type': 'movie',
@@ -123,12 +111,64 @@ def movie_detail_start():
     thread.setDaemon(True)
     thread.start()
 
+def allow_type(typename):
+    __types__ = ['电影']
+    for _type in __types__:
+        if typename.endswith(_type):
+            return True
+    return False
+
+def get_movie_url_from_bilibili():
+    betelgeuse = Betelgeuse()
+    bellatrix = Bellatrix(options.appkey, options.appsecret)
+
+    while True:
+        available = model.MovieQueue.select().where(model.MovieQueue.state == 1).count()
+        if available > 0:
+            prepare_movies =  model.MovieQueue.select().where(model.MovieQueue.state == 1).limit(100)
+            for m in prepare_movies:
+                movie = Alnilam.get_first_movie(m.douban_id)
+                search_reault = bellatrix.search(movie.title)
+                if search_reault.is_done:
+                    for sr in search_reault.result:
+                        if allow_type(sr["typename"]):
+                            detail = bellatrix.view(sr["aid"])
+                            pages = detail.pages
+                            for i in range(0, pages):
+                                page = i + 1
+                                detail.h5 = bellatrix.build_h5_url(sr["aid"], page)
+                                detail.h5_hd = bellatrix.build_h5_hd_url(sr["aid"], page)
+                                detail.h5_low = bellatrix.build_h5_low_url(sr["aid"], page)
+                                if hasattr(detail, 'cid'):
+                                    detail.download = bellatrix.build_download_url(detail.cid, page)
+                                with model.database.atomic() as txn:
+                                    try:
+                                        betelgeuse.build_bilibili(sr, m.douban_id)
+                                        betelgeuse.replenish_bilibili(sr["aid"], detail)
+                                        m.state = 2
+                                        m.save()
+                                    except Exception as e:
+                                        logger.error(e)
+                                        txn.rollback()
+                                detail = bellatrix.view(sr["aid"], page)
+                            sleep(2)
+        else:
+            sleep(2)
+
+
+def bilibili_media_start():
+    sleep(2)
+    thread = threading.Thread(target=get_movie_url_from_bilibili, name="get_movie_url_from_bilibili")
+    thread.setDaemon(True)
+    thread.start()
+
 def main():
     first = get_continue()
     meissa = Meissa()
     start_num = first.start_num
 
     movie_detail_start()
+    bilibili_media_start()
     for idx, tag in enumerate(__tags):
         if idx < first.tag_index:
             continue
@@ -140,9 +180,9 @@ def main():
             raise
 
     while True:
-        available = model.MovieQueue.select().where(model.MovieQueue.state == 0).count()
+        available = model.MovieQueue.select().where( (model.MovieQueue.state == 0) | (model.MovieQueue.state == 1) ).count()
         if available == 0:
-            logger.info("finish")
+            logger.info("douban finish")
             sys.exit(3)
         else:
             sleep(1200)

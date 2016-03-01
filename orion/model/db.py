@@ -174,6 +174,58 @@ class MovieQueue(BaseModel):
 		db_table = prefix + "movie_queue"
 
 
+class BilibiliMovie(BaseModel):
+	id = PrimaryKeyField()
+	douban_id = IntegerField()
+	avid = IntegerField(unique=True)
+	author = CharField()
+	typename = CharField()
+	arcurl = CharField()
+	description = TextField()
+	title = CharField()
+	play = CharField()
+	pages = IntegerField()
+
+	created_at = DateTimeField(default=datetime.datetime.now)
+	updated_at = DateTimeField(default=datetime.datetime.now)
+
+	class Meta:
+		db_table = prefix + "bilibili_movies"
+
+
+class BilibiliMedia(BaseModel):
+	id = PrimaryKeyField()
+	avid = IntegerField()
+	order = IntegerField(default=1)
+	mid = IntegerField()
+	cid = IntegerField()
+	offsite = CharField()
+	h5 = CharField()
+	h5_hd = CharField()
+	h5_low = CharField()
+	download = CharField()
+
+	created_at = DateTimeField(default=datetime.datetime.now)
+	updated_at = DateTimeField(default=datetime.datetime.now)
+
+	class Meta:
+		db_table = prefix + "bilibili_medias"
+
+
+class BilibiliGenre(BaseModel):
+	id = PrimaryKeyField()
+	bilibili = ForeignKeyField(BilibiliMovie)
+	genre = ForeignKeyField(Genre)
+	created_at = DateTimeField(default=datetime.datetime.now)
+	updated_at = DateTimeField(default=datetime.datetime.now)
+
+	class Meta:
+		db_table = prefix + "bilibili_genres"
+
+def init_bilibili():
+	database.connect()
+	database.create_tables([BilibiliMovie, BilibiliGenre, BilibiliMedia])
+
 def init_db():
 	__all__ = [
 		Image,
@@ -194,3 +246,4 @@ def init_db():
 
 if __name__ == '__main__':
     init_db()
+    init_bilibili()
