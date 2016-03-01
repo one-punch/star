@@ -177,29 +177,14 @@ class MovieQueue(BaseModel):
 class BilibiliMovie(BaseModel):
 	id = PrimaryKeyField()
 	douban_id = IntegerField()
-	avid = IntegerField()
+	avid = IntegerField(unique=True)
 	author = CharField()
 	typename = CharField()
 	arcurl = CharField()
-
-
-"type": "video",
-            "id": 3658407,
-            "author": "无敌赵大宝941",
-            "mid": 21787261,
-            "typename": "电影相关",
-            "arcurl": "http://www.bilibili.com/video/av3658407/",
-            "aid": "3658407",
-            "description": "自制 无论他是韦格纳还是莉莉，格尔达都爱他，他是她的缪斯也是她的爱人\r\n这个电影很让人感动也让人揪心，是一部非常棒的电影",
-            "title": "丹麦女孩",
-            "arcrank": "0",
-            "pic": "http://i0.hdslb.com/video/a2/a27341c8157ed529408165016f3de81b.jpg",
-            "play": 32772,
-            "video_review": 34,
-            "favorites": 593,
-            "tag": "电影剪辑,丹麦女孩",
-            "review": 12,
-            "pubdate": 1453656091
+	description = TextField()
+	title = CharField()
+	play = CharField()
+	pages = IntegerField()
 
 	created_at = DateTimeField(default=datetime.datetime.now)
 	updated_at = DateTimeField(default=datetime.datetime.now)
@@ -208,6 +193,38 @@ class BilibiliMovie(BaseModel):
 		db_table = prefix + "bilibili_movies"
 
 
+class BilibiliMedia(BaseModel):
+	id = PrimaryKeyField()
+	avid = IntegerField()
+	order = IntegerField(default=1)
+	mid = IntegerField()
+	cid = IntegerField()
+	offsite = CharField()
+	h5 = CharField()
+	h5_hd = CharField()
+	h5_low = CharField()
+	download = CharField()
+
+	created_at = DateTimeField(default=datetime.datetime.now)
+	updated_at = DateTimeField(default=datetime.datetime.now)
+
+	class Meta:
+		db_table = prefix + "bilibili_medias"
+
+
+class BilibiliGenre(BaseModel):
+	id = PrimaryKeyField()
+	bilibili = ForeignKeyField(BilibiliMovie)
+	genre = ForeignKeyField(Genre)
+	created_at = DateTimeField(default=datetime.datetime.now)
+	updated_at = DateTimeField(default=datetime.datetime.now)
+
+	class Meta:
+		db_table = prefix + "bilibili_genres"
+
+def init_bilibili():
+	database.connect()
+	database.create_tables([BilibiliMovie, BilibiliGenre, BilibiliMedia])
 
 def init_db():
 	__all__ = [
@@ -229,3 +246,4 @@ def init_db():
 
 if __name__ == '__main__':
     init_db()
+    init_bilibili()
