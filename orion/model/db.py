@@ -167,7 +167,7 @@ class Config(BaseModel):
 class MovieQueue(BaseModel):
 	id = PrimaryKeyField()
 	douban_id = CharField()
-	state = IntegerField(default=0)
+	state = IntegerField(default=0)  # 0: 未获取详豆瓣细数据， 1：已经获取豆瓣数据未获取b站对应视频， 2： 成功获取b站对应数据， 3：未能在b站获取对应视频数据
 	created_at = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:

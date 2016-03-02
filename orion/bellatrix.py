@@ -72,7 +72,7 @@ class Bellatrix(Planet):
 		m.update( (data+self.appsecret).encode('utf-8') )
 		return data+'&sign='+m.hexdigest()
 
-	def search(self, keyword, page=1, order="default", pagesize=20):
+	def search(self, keyword, page=1, order="default", pagesize=100):
 		params = {}
 		params['keyword'] = keyword
 		params['order'] = order

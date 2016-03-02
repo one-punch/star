@@ -130,8 +130,10 @@ def get_movie_url_from_bilibili():
                 movie = Alnilam.get_first_movie(m.douban_id)
                 search_reault = bellatrix.search(movie.title)
                 if search_reault.is_done:
+                    match_movie = False
                     for sr in search_reault.result:
                         if allow_type(sr["typename"]):
+                            match_movie = True
                             detail = bellatrix.view(sr["aid"])
                             pages = detail.pages
                             for i in range(0, pages):
@@ -152,6 +154,9 @@ def get_movie_url_from_bilibili():
                                         txn.rollback()
                                 detail = bellatrix.view(sr["aid"], page)
                             sleep(2)
+                    if not match_movie:
+                        m.state = 3
+                        m.save()
         else:
             sleep(2)
 
