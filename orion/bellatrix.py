@@ -98,13 +98,13 @@ class Bellatrix(Planet):
 		return self.__urls["cloudmoe"] + ("?api={0}&id={1}&page={2}".format(api, avid, page))
 
 	def build_h5_url(self, avid, page=1):
-		return self.build_url(avid=avid, api="h5", page=1)
+		return self.build_url(avid, "h5", page)
 
 	def build_h5_hd_url(self, avid, page=1):
-		return self.build_url(avid=avid, api="h5_hd", page=1)
+		return self.build_url(avid, "h5_hd", page)
 
 	def build_h5_low_url(self, avid, page=1):
-		return self.build_url(avid=avid, api="h5_low", page=1)
+		return self.build_url(avid, "h5_low", page)
 
 	def sort_params(params):
 		data = "";
@@ -115,7 +115,7 @@ class Bellatrix(Planet):
 			data += para + "=" + str(params[para]);
 		return data
 
-	def build_download_url(self, cid, page=1, overseas=False, type="mp4"):
+	def build_download_url(self, cid, overseas=False, type="mp4"):
 		url_get_media = self.__urls["playurl"] if not overseas else self.__urls["playurl"]
 
 		media_args = {'otype': 'json', 'cid': cid, 'type': 'mp4', 'quality': 4, 'appkey': self.appkey}
@@ -123,6 +123,7 @@ class Bellatrix(Planet):
 		logger.info("get: " + url)
 		res = self.opener.open(url).read()
 		result = json.loads(res.decode())
+		print(result)
 		if result["result"] == "error":
 			return ''
 		return  result['durl'][0]['url']
@@ -134,3 +135,7 @@ class Bellatrix(Planet):
 		logger.info("get: " + self.__urls["view"] + "?" + sign)
 		res = self.opener.open(self.__urls["view"] + "?" + sign).read()
 		return Subject(json.loads(res.decode()))
+
+if __name__ == "__main__":
+	b = Bellatrix(options.appkey, options.appsecret)
+	b.build_download_url(4239241)

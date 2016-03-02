@@ -128,35 +128,37 @@ def get_movie_url_from_bilibili():
             prepare_movies =  model.MovieQueue.select().where(model.MovieQueue.state == 1).limit(100)
             for m in prepare_movies:
                 movie = Alnilam.get_first_movie(m.douban_id)
-                search_reault = bellatrix.search(movie.title)
-                if search_reault.is_done:
-                    match_movie = False
-                    for sr in search_reault.result:
-                        if allow_type(sr["typename"]):
-                            match_movie = True
-                            detail = bellatrix.view(sr["aid"])
-                            pages = detail.pages
-                            for i in range(0, pages):
-                                page = i + 1
-                                detail.h5 = bellatrix.build_h5_url(sr["aid"], page)
-                                detail.h5_hd = bellatrix.build_h5_hd_url(sr["aid"], page)
-                                detail.h5_low = bellatrix.build_h5_low_url(sr["aid"], page)
-                                if hasattr(detail, 'cid'):
-                                    detail.download = bellatrix.build_download_url(detail.cid, page)
-                                with model.database.atomic() as txn:
-                                    try:
-                                        betelgeuse.build_bilibili(sr, m.douban_id)
-                                        betelgeuse.replenish_bilibili(sr["aid"], detail)
-                                        m.state = 2
-                                        m.save()
-                                    except Exception as e:
-                                        logger.error(e)
-                                        txn.rollback()
-                                detail = bellatrix.view(sr["aid"], page)
-                            sleep(2)
-                    if not match_movie:
-                        m.state = 3
-                        m.save()
+                try:
+                    search_reault = bellatrix.search(movie.title)
+                    if search_reault.is_done:
+                        match_movie = False
+                        for sr in search_reault.result:
+                            if allow_type(sr["typename"]):
+                                match_movie = True
+                                detail = bellatrix.view(sr["aid"])
+                                pages = detail.pages
+                                for page in range(1, pages+1):
+                                    detail.h5 = bellatrix.build_h5_url(sr["aid"], page)
+                                    detail.h5_hd = bellatrix.build_h5_hd_url(sr["aid"], page)
+                                    detail.h5_low = bellatrix.build_h5_low_url(sr["aid"], page)
+                                    if hasattr(detail, 'cid'):
+                                        detail.download = bellatrix.build_download_url(detail.cid)
+                                    with model.database.atomic() as txn:
+                                        try:
+                                            betelgeuse.build_bilibili(sr, m.douban_id)
+                                            betelgeuse.replenish_bilibili(sr["aid"], detail)
+                                            m.state = 2
+                                            m.save()
+                                        except Exception as e:
+                                            logger.error(e)
+                                            txn.rollback()
+                                    detail = bellatrix.view(sr["aid"], page + 1)
+                                sleep(2)
+                        if not match_movie:
+                            m.state = 3
+                            m.save()
+                except Exception as e:
+                    logger.error(e)
         else:
             sleep(2)
 
