@@ -15,7 +15,6 @@ import sys
 
 
 options = config.options
-logger = log.logger()
 
 __tags = ["热门","最新","经典","可播放", "豆瓣高分","冷门佳片","华语","欧美","韩国","日本","动作","喜剧","爱情","科幻","悬疑","恐怖","文艺"]
 
@@ -47,6 +46,7 @@ class Meissa(Planet):
             self.x = x
             data['page_start'] = x * options.page_limit
             params = urllib.parse.urlencode(data)
+            log.logger().info("get: " + self.__urls["search"] + "?" + params)
             res = self.opener.open(self.__urls["search"] + "?" + params, timeout = self.timeout)
             result = res.read()
             subjects_json = json.loads(result.decode())
@@ -55,6 +55,7 @@ class Meissa(Planet):
 
     def get_detail(self, subject_id):
         url = self.__urls["detail"] % (subject_id+"")
+        log.logger().info("get: " + url)
         res = self.opener.open(url, timeout = self.timeout)
         result = json.loads((res.read().decode()))
         return Subject(result)
@@ -96,9 +97,9 @@ def get_movie_detail():
                         alnilam.generate_movie(detail)
                         m.state = 1
                         m.save()
-                        logger.info(detail.id + " " + detail.title)
+                        log.logger().info(detail.id + " " + detail.title)
                     except Exception as e:
-                        logger.error(e)
+                        log.logger().error(e)
                         txn.rollback()
                 sleep(2)
         else:
@@ -147,7 +148,7 @@ def get_movie_url_from_bilibili():
                                             m.state = 2
                                             m.save()
                                         except Exception as e:
-                                            logger.error(e)
+                                            log.logger().error(e)
                                             txn.rollback()
                                     detail = bellatrix.view(sr["aid"], page + 1)
                                     sleep(2)
@@ -157,7 +158,7 @@ def get_movie_url_from_bilibili():
                             m.save()
                     sleep(1)
                 except Exception as e:
-                    logger.error(e)
+                    log.logger().error(e)
         else:
             sleep(2)
 
@@ -188,11 +189,10 @@ def main():
     while True:
         available = model.MovieQueue.select().where( (model.MovieQueue.state == 0) | (model.MovieQueue.state == 1) ).count()
         if available == 0:
-            logger.info("douban finish")
+            log.logger().info("douban finish")
             sys.exit(3)
         else:
             sleep(1200)
-
 
 if __name__ == '__main__':
     main()

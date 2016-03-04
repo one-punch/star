@@ -7,10 +7,6 @@ import json
 from betelgeuse import Betelgeuse
 from urllib.parse import urlparse, parse_qs
 
-options = config.options
-logger = log.logger()
-
-
 class Subject():
     def __init__(self, d):
         self.__dict__ = d
@@ -81,7 +77,7 @@ class Bellatrix(Planet):
 		params['page'] = page
 
 		sign = self.get_sign(params)
-		logger.info("get: " + self.__urls["search"] + "?" + sign)
+		log.logger().info("get: " + self.__urls["search"] + "?" + sign)
 		res = self.opener.open(self.__urls["search"] + "?" + sign).read()
 		res_json = json.loads(res.decode())
 		if res_json["code"] == 0:
@@ -109,10 +105,10 @@ class Bellatrix(Planet):
 
 		media_args = {'otype': 'json', 'cid': cid, 'type': 'mp4', 'quality': 4, 'appkey': self.appkey}
 		url = url_get_media + "?" +Bellatrix.sort_params(media_args)
-		logger.info("get: " + url)
+		log.logger().info("get: " + url)
 		res = self.opener.open(url).read()
 		result = json.loads(res.decode())
-		print(result)
+		log.logger().info(result)
 		if (result is None) or (result["result"] == "error"):
 			return '', 0
 		download_url = result['durl'][0]['url']
@@ -124,17 +120,18 @@ class Bellatrix(Planet):
 			expires = params["wsTime"][0]
 		elif "tm" in params:
 			expires = params["tm"][0]
-		print("download_url: {}, expires: {}".format(download_url, expires))
+		log.logger().info("download_url: {}, expires: {}".format(download_url, expires))
 		return  download_url, expires
 
 	def view(self, avid, page=1):
 		params = {'id': avid,'page': page}
 		sign = self.get_sign(params)
 
-		logger.info("get: " + self.__urls["view"] + "?" + sign)
+		log.logger().info("get: " + self.__urls["view"] + "?" + sign)
 		res = self.opener.open(self.__urls["view"] + "?" + sign).read()
 		return Subject(json.loads(res.decode()))
 
 if __name__ == "__main__":
+	options = config.options
 	b = Bellatrix(options.appkey, options.appsecret)
 	b.build_download_url(3439258)
