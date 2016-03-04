@@ -5,6 +5,7 @@ import log
 import config
 import json
 from betelgeuse import Betelgeuse
+from urllib.parse import urlparse, parse_qs
 
 options = config.options
 logger = log.logger()
@@ -94,18 +95,6 @@ class Bellatrix(Planet):
 		else:
 			return Subject({"is_done": res_json["code"] == 0})
 
-	def build_url(self, avid, api="h5", page=1):
-		return self.__urls["cloudmoe"] + ("?api={0}&id={1}&page={2}".format(api, avid, page))
-
-	def build_h5_url(self, avid, page=1):
-		return self.build_url(avid, "h5", page)
-
-	def build_h5_hd_url(self, avid, page=1):
-		return self.build_url(avid, "h5_hd", page)
-
-	def build_h5_low_url(self, avid, page=1):
-		return self.build_url(avid, "h5_low", page)
-
 	def sort_params(params):
 		data = "";
 		paras = params;
@@ -124,9 +113,19 @@ class Bellatrix(Planet):
 		res = self.opener.open(url).read()
 		result = json.loads(res.decode())
 		print(result)
-		if result["result"] == "error":
-			return ''
-		return  result['durl'][0]['url']
+		if (result is None) or (result["result"] == "error"):
+			return '', 0
+		download_url = result['durl'][0]['url']
+		params = parse_qs(urlparse(download_url).query)
+		expires = 0
+		if "expires" in params:
+			expires = params["expires"][0]
+		elif "wsTime" in params:
+			expires = params["wsTime"][0]
+		elif "tm" in params:
+			expires = params["tm"][0]
+		print("download_url: {}, expires: {}".format(download_url, expires))
+		return  download_url, expires
 
 	def view(self, avid, page=1):
 		params = {'id': avid,'page': page}
@@ -138,4 +137,4 @@ class Bellatrix(Planet):
 
 if __name__ == "__main__":
 	b = Bellatrix(options.appkey, options.appsecret)
-	b.build_download_url(4239241)
+	b.build_download_url(3439258)

@@ -30,7 +30,7 @@ class Betelgeuse:
 			bilibili_media = Betelgeuse.get_first_bilibili_media(data.cid)
 			if bilibili_media is None:
 				bilibili_media = model.BilibiliMedia.create(avid=avid, order=order, mid=data.mid, cid=data.cid, offsite=data.offsite,
-					h5=data.h5, h5_hd=data.h5_hd, h5_low=data.h5_low, download=data.download)
+					download=data.download, expires=data.expires)
 
 	def build_bilibili(self, data, douban_id=None):
 		bilibili = Betelgeuse.get_first_bilibili(data["aid"])

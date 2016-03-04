@@ -200,10 +200,8 @@ class BilibiliMedia(BaseModel):
 	mid = IntegerField()
 	cid = IntegerField()
 	offsite = CharField()
-	h5 = CharField()
-	h5_hd = CharField()
-	h5_low = CharField()
-	download = CharField()
+	download = CharField(max_length=511)
+	expires = IntegerField(default=0)
 
 	created_at = DateTimeField(default=datetime.datetime.now)
 	updated_at = DateTimeField(default=datetime.datetime.now)
