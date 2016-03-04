@@ -4,7 +4,6 @@ import logging.config
 
 def logger():
     if "LOGGER" in globals():
-        print("init logger")
         return LOGGER
     else:
         global LOGGER
