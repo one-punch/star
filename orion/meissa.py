@@ -156,7 +156,7 @@ def get_movie_url_from_bilibili():
                         if not match_movie:
                             m.state = 3
                             m.save()
-                    sleep(1)
+                    sleep(2)
                 except Exception as e:
                     log.logger().error(e)
         else:
