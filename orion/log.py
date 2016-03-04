@@ -3,5 +3,11 @@ import logging.config
 
 
 def logger():
-    logging.config.fileConfig("logging.conf")
-    return logging.getLogger("orion")
+    if "LOGGER" in globals():
+        print("init logger")
+        return LOGGER
+    else:
+        global LOGGER
+        logging.config.fileConfig("logging.conf")
+        LOGGER = logging.getLogger("orion")
+        return LOGGER
