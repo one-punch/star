@@ -180,11 +180,11 @@ class BilibiliMovie(BaseModel):
 	avid = IntegerField(unique=True)
 	author = CharField()
 	typename = CharField()
-	arcurl = CharField()
+	arcurl = CharField(null=True)
 	description = TextField()
 	title = CharField()
-	play = CharField()
-	pages = IntegerField()
+	play = CharField(null=True)
+	pages = IntegerField(default=1)
 
 	created_at = DateTimeField(default=datetime.datetime.now)
 	updated_at = DateTimeField(default=datetime.datetime.now)
@@ -199,7 +199,7 @@ class BilibiliMedia(BaseModel):
 	order = IntegerField(default=1)
 	mid = IntegerField()
 	cid = IntegerField()
-	offsite = CharField()
+	offsite = CharField(null=True)
 	download = CharField(max_length=511)
 	expires = IntegerField(default=0)
 
