@@ -26,9 +26,9 @@ class ImageManager(object):
 
 class Image(BaseModel):
 	id = PrimaryKeyField()
-	small = CharField()
-	medium = CharField()
-	large = CharField()
+	small = CharField(null=True)
+	medium = CharField(null=True)
+	large = CharField(null=True)
 	item_type = CharField()
 	item_id = IntegerField()
 	created_at = DateTimeField(default=datetime.datetime.now)
@@ -41,7 +41,7 @@ class Image(BaseModel):
 class Country(BaseModel):
 	id = PrimaryKeyField()
 	name = CharField()
-	code = CharField()
+	code = CharField(null=True)
 	created_at = DateTimeField(default=datetime.datetime.now)
 	updated_at = DateTimeField(default=datetime.datetime.now)
 
@@ -52,7 +52,7 @@ class Country(BaseModel):
 class Genre(BaseModel):
 	id = PrimaryKeyField()
 	name = CharField()
-	code = CharField()
+	code = CharField(null=True)
 	created_at = DateTimeField(default=datetime.datetime.now)
 	updated_at = DateTimeField(default=datetime.datetime.now)
 
@@ -63,8 +63,8 @@ class Genre(BaseModel):
 class Celebrity(BaseModel, ImageManager):
 	id = PrimaryKeyField()
 	douban_id = IntegerField(unique=True)
-	name = CharField()
-	douban_url = CharField()
+	name = CharField(null=True)
+	douban_url = CharField(null=True)
 	created_at = DateTimeField(default=datetime.datetime.now)
 	updated_at = DateTimeField(default=datetime.datetime.now)
 
@@ -77,15 +77,15 @@ class Movie(BaseModel, ImageManager):
 	douban_id = IntegerField(unique=True)
 	title = CharField()
 	douban_url = CharField()
-	rate = FloatField()
-	year = IntegerField()
+	rate = FloatField(null=True)
+	year = IntegerField(null=True)
 	douban_mobile_url = CharField()
 	ratings_count = IntegerField()
 	collect_count = IntegerField()
 	reviews_count = IntegerField()
 	summary = TextField()
 	original_title = CharField()
-	url = CharField()
+	url = CharField(null=True)
 	created_at = DateTimeField(default=datetime.datetime.now)
 	updated_at = DateTimeField(default=datetime.datetime.now)
 
@@ -157,7 +157,7 @@ class MovieCast(BaseModel):
 class Config(BaseModel):
 	id = PrimaryKeyField()
 	name = CharField()
-	value = CharField()
+	value = CharField(null=True)
 	created_at = DateTimeField(default=datetime.datetime.now)
 	updated_at = DateTimeField(default=datetime.datetime.now)
 
