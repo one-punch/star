@@ -65,6 +65,9 @@ class Meissa(Planet):
             movie = model.MovieQueue.select().where(model.MovieQueue.douban_id == movie_json["id"]).limit(1).first()
             if movie is None:
                 model.MovieQueue.create(douban_id=movie_json["id"])
+                log.logger().info("{0}, {1} push into queue".format(movie_json["id"], movie_json["title"]))
+            else:
+                log.logger().info("movie: {0}, {1} exist".format(movie_json["id"], movie_json["title"]))
 
 
 def get_continue():

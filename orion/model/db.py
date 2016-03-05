@@ -198,7 +198,7 @@ class BilibiliMedia(BaseModel):
 	avid = IntegerField()
 	order = IntegerField(default=1)
 	mid = IntegerField()
-	cid = IntegerField()
+	cid = IntegerField(unique=True)
 	offsite = CharField(null=True)
 	download = CharField(max_length=511)
 	expires = IntegerField(default=0)
