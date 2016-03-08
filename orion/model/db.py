@@ -31,8 +31,8 @@ class Image(BaseModel):
 	large = CharField(null=True)
 	item_type = CharField()
 	item_id = IntegerField()
-	created_at = DateTimeField(default=datetime.datetime.now)
-	updated_at = DateTimeField(default=datetime.datetime.now)
+	createdAt = DateTimeField(default=datetime.datetime.now)
+	updatedAt = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
 		db_table = prefix + "images"
@@ -42,8 +42,8 @@ class Country(BaseModel):
 	id = PrimaryKeyField()
 	name = CharField()
 	code = CharField(null=True)
-	created_at = DateTimeField(default=datetime.datetime.now)
-	updated_at = DateTimeField(default=datetime.datetime.now)
+	createdAt = DateTimeField(default=datetime.datetime.now)
+	updatedAt = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
 		db_table = prefix + "countries"
@@ -53,8 +53,8 @@ class Genre(BaseModel):
 	id = PrimaryKeyField()
 	name = CharField()
 	code = CharField(null=True)
-	created_at = DateTimeField(default=datetime.datetime.now)
-	updated_at = DateTimeField(default=datetime.datetime.now)
+	createdAt = DateTimeField(default=datetime.datetime.now)
+	updatedAt = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
 		db_table = prefix + "genres"
@@ -65,8 +65,8 @@ class Celebrity(BaseModel, ImageManager):
 	douban_id = IntegerField(unique=True)
 	name = CharField(null=True)
 	douban_url = CharField(null=True)
-	created_at = DateTimeField(default=datetime.datetime.now)
-	updated_at = DateTimeField(default=datetime.datetime.now)
+	createdAt = DateTimeField(default=datetime.datetime.now)
+	updatedAt = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
 		db_table = prefix + "celebrities"
@@ -86,8 +86,9 @@ class Movie(BaseModel, ImageManager):
 	summary = TextField()
 	original_title = CharField()
 	url = CharField(null=True)
-	created_at = DateTimeField(default=datetime.datetime.now)
-	updated_at = DateTimeField(default=datetime.datetime.now)
+	display = BooleanField(default=True)
+	createdAt = DateTimeField(default=datetime.datetime.now)
+	updatedAt = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
 		db_table = prefix + "movies"
@@ -117,8 +118,8 @@ class MovieCountry(BaseModel):
 	id = PrimaryKeyField()
 	movie = ForeignKeyField(Movie)
 	country = ForeignKeyField(Country)
-	created_at = DateTimeField(default=datetime.datetime.now)
-	updated_at = DateTimeField(default=datetime.datetime.now)
+	createdAt = DateTimeField(default=datetime.datetime.now)
+	updatedAt = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
 		db_table = prefix + "movies_countries"
@@ -127,8 +128,8 @@ class MovieGenre(BaseModel):
 	id = PrimaryKeyField()
 	movie = ForeignKeyField(Movie)
 	genre = ForeignKeyField(Genre)
-	created_at = DateTimeField(default=datetime.datetime.now)
-	updated_at = DateTimeField(default=datetime.datetime.now)
+	createdAt = DateTimeField(default=datetime.datetime.now)
+	updatedAt = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
 		db_table = prefix + "movies_genres"
@@ -138,8 +139,8 @@ class MovieDirector(BaseModel):
 	id = PrimaryKeyField()
 	movie = ForeignKeyField(Movie)
 	director = ForeignKeyField(Celebrity)
-	created_at = DateTimeField(default=datetime.datetime.now)
-	updated_at = DateTimeField(default=datetime.datetime.now)
+	createdAt = DateTimeField(default=datetime.datetime.now)
+	updatedAt = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
 		db_table = prefix + "movies_directors"
@@ -148,8 +149,8 @@ class MovieCast(BaseModel):
 	id = PrimaryKeyField()
 	movie = ForeignKeyField(Movie)
 	cast = ForeignKeyField(Celebrity)
-	created_at = DateTimeField(default=datetime.datetime.now)
-	updated_at = DateTimeField(default=datetime.datetime.now)
+	createdAt = DateTimeField(default=datetime.datetime.now)
+	updatedAt = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
 		db_table = prefix + "movies_casts"
@@ -158,8 +159,8 @@ class Config(BaseModel):
 	id = PrimaryKeyField()
 	name = CharField()
 	value = CharField(null=True)
-	created_at = DateTimeField(default=datetime.datetime.now)
-	updated_at = DateTimeField(default=datetime.datetime.now)
+	createdAt = DateTimeField(default=datetime.datetime.now)
+	updatedAt = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
 		db_table = prefix + "configs"
@@ -168,7 +169,7 @@ class MovieQueue(BaseModel):
 	id = PrimaryKeyField()
 	douban_id = CharField()
 	state = IntegerField(default=0)  # 0: 未获取详豆瓣细数据， 1：已经获取豆瓣数据未获取b站对应视频， 2： 成功获取b站对应数据， 3：未能在b站获取对应视频数据
-	created_at = DateTimeField(default=datetime.datetime.now)
+	createdAt = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
 		db_table = prefix + "movie_queue"
@@ -185,9 +186,10 @@ class BilibiliMovie(BaseModel):
 	title = CharField()
 	play = CharField(null=True)
 	pages = IntegerField(default=1)
+	display = BooleanField(default=True)
 
-	created_at = DateTimeField(default=datetime.datetime.now)
-	updated_at = DateTimeField(default=datetime.datetime.now)
+	createdAt = DateTimeField(default=datetime.datetime.now)
+	updatedAt = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
 		db_table = prefix + "bilibili_movies"
@@ -202,9 +204,10 @@ class BilibiliMedia(BaseModel):
 	offsite = CharField(null=True)
 	download = CharField(max_length=511)
 	expires = IntegerField(default=0)
+	display = BooleanField(default=True)
 
-	created_at = DateTimeField(default=datetime.datetime.now)
-	updated_at = DateTimeField(default=datetime.datetime.now)
+	createdAt = DateTimeField(default=datetime.datetime.now)
+	updatedAt = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
 		db_table = prefix + "bilibili_medias"
@@ -214,8 +217,8 @@ class BilibiliGenre(BaseModel):
 	id = PrimaryKeyField()
 	bilibili = ForeignKeyField(BilibiliMovie)
 	genre = ForeignKeyField(Genre)
-	created_at = DateTimeField(default=datetime.datetime.now)
-	updated_at = DateTimeField(default=datetime.datetime.now)
+	createdAt = DateTimeField(default=datetime.datetime.now)
+	updatedAt = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
 		db_table = prefix + "bilibili_genres"
